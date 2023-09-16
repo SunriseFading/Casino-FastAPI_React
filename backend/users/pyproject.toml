@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "users"
+version = "0.1.0"
+description = ""
+authors = ["SunriseFading <sunrisefading@proton.me>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.103.1"
+pydantic-settings = "^2.0.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
