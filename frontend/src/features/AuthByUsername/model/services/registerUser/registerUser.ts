@@ -1,26 +1,28 @@
 import { $api } from 'shared/api/authApi';
 import { createAsyncThunk } from '@reduxjs/toolkit';
-import { User, userActions } from 'entitites/User';
+import { userActions } from 'entitites/User';
 import i18n from 'shared/config/i18n/i18n';
 import { USER_LOCALSTORAGE_KEY } from 'shared/const/localStorage';
+import { AuthResponse } from '../../types/authSchema';
 
-interface RegisterUserProps {
+interface RegisterUserRequest {
   username: string;
   password: string;
 }
+
 export const registerUser = createAsyncThunk<
-  User,
-  RegisterUserProps,
+  AuthResponse,
+  RegisterUserRequest,
   { rejectValue: string }
 >('auth/registerUser', async (authData, thunkAPI) => {
   try {
-    const response = await $api.post<User>('/register', authData);
+    const response = await $api.post<AuthResponse>('/register', authData);
     if (!response.data) {
       throw new Error();
     }
     localStorage.setItem(
       USER_LOCALSTORAGE_KEY,
-      JSON.stringify(response.data.tokens.accessToken)
+      JSON.stringify(response.data.accessToken)
     );
     thunkAPI.dispatch(userActions.setAuthData(response.data));
     return response.data;

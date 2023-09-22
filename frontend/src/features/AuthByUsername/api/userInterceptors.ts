@@ -1,7 +1,7 @@
 import axios from 'axios';
-import { User } from 'entitites/User';
 import { $api, API_URL } from 'shared/api/authApi';
 import { USER_LOCALSTORAGE_KEY } from 'shared/const/localStorage';
+import { AuthResponse } from '../model/types/authSchema';
 
 $api.interceptors.request.use((config) => {
   config.headers.Authorization = `Bearer ${localStorage.getItem(
@@ -22,12 +22,12 @@ $api.interceptors.response.use(
     if (err.response.status === 401 && !originalRequest._isRetry) {
       originalRequest._isRetry = true;
       try {
-        const response = await axios.get<User>(`${API_URL}/refresh`, {
+        const response = await axios.get<AuthResponse>(`${API_URL}/refresh`, {
           withCredentials: true,
         });
         localStorage.setItem(
           USER_LOCALSTORAGE_KEY,
-          response.data.tokens.accessToken
+          response.data.accessToken
         );
         return await $api.request(originalRequest);
       } catch (e) {

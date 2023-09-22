@@ -41,7 +41,7 @@ export const Navbar = ({ className }: NavbarProps) => {
     dispatch(userActions.logout());
   }, [dispatch]);
 
-  if (authData?.tokens?.accessToken) {
+  if (authData?.accessToken) {
     return (
       <div className={classNames(cls.Navbar, {}, [className])}>
         <Button
