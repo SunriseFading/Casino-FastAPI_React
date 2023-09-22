@@ -1,12 +1,7 @@
 export interface User {
   id: string;
   username: string;
-  tokens: Token;
-}
-
-export interface Token {
-  accessToken: string;
-  refreshToken: string;
+  accessToken: string
 }
 
 export interface UserSchema {

@@ -4,3 +4,9 @@ export interface AuthSchema {
   isLoading: boolean;
   error?: string;
 }
+
+export interface AuthResponse {
+  id: string;
+  accessToken: string;
+  username: string;
+}
