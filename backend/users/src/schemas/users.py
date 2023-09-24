@@ -16,7 +16,7 @@ class UserResponseSchema(BaseSchema):
     id: int
     username: str
     access_token: str | None = None
-    refresh_token: str | None = None
+    # refresh_token: str | None = None
 
 
 class UserErrorSchema(BaseSchema):

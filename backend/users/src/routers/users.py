@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status, Security, HTTPException
+from fastapi import APIRouter, Depends, status, Security, HTTPException, Response
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.database.session import create_postgres_session
 from src.schemas.users import UserLoginSchema, UserRegisterSchema, UserResponseSchema
@@ -21,10 +21,12 @@ router = APIRouter(
     summary="Register",
 )
 async def register(
+    response: Response,
     schema: UserRegisterSchema,
     postgres_session: AsyncSession = Depends(create_postgres_session),
 ):
     return await user_service.register(
+        response=response,
         schema=schema,
         session=postgres_session,
     )
@@ -37,26 +39,30 @@ async def register(
     summary="Login",
 )
 async def login(
+    response: Response,
     schema: UserLoginSchema,
     postgres_session: AsyncSession = Depends(create_postgres_session),
 ):
     return await user_service.login(
+        response=response,
         schema=schema,
         session=postgres_session,
     )
 
 
-@router.post(
+@router.get(
     path="/refresh",
     response_model=UserResponseSchema,
     status_code=status.HTTP_200_OK,
     summary="Refresh token",
 )
 async def refresh(
+    response: Response,
     credentials: JwtAuthorizationCredentials = Security(refresh_security),
     postgres_session: AsyncSession = Depends(create_postgres_session),
 ):
     return await user_service.refresh(
+        response=response,
         credentials=credentials,
         session=postgres_session,
     )

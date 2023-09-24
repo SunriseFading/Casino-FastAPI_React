@@ -1,3 +1,4 @@
+from fastapi import Response
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.schemas.users import UserLoginSchema, UserRegisterSchema
 from src.controllers.users import user_controller
@@ -18,28 +19,31 @@ class UserService:
             return response
         return None
 
-    async def register(self, schema: UserRegisterSchema, session: AsyncSession):
+    async def register(self, response: Response, schema: UserRegisterSchema, session: AsyncSession):
         schema.password = hash_password(password=schema.password)
-        response = await self.create(schema=schema, session=session, raw=False)
-        response.access_token = access_security.create_access_token(subject={"username": response.username})
-        response.refresh_token = refresh_security.create_refresh_token(subject={"username": response.username})
-        return response
+        response_schema = await self.create(schema=schema, session=session, raw=False)
+        response_schema.access_token = access_security.create_access_token(subject={"username": response_schema.username})
+        refresh_token = refresh_security.create_refresh_token(subject={"username": response_schema.username})
+        refresh_security.set_refresh_cookie(response=response, refresh_token=refresh_token)
+        return response_schema
 
-    async def login(self, schema: UserLoginSchema, session: AsyncSession):
+    async def login(self, response: Response, schema: UserLoginSchema, session: AsyncSession):
         username = schema.username
         if model := await self.get(username=username, session=session, raw=True):
             if verify_password(plain_password=schema.password, hashed_password=model.password):
-                response = self.controller.to_schema(**model.__dict__)
-                response.access_token = access_security.create_access_token(subject={"username": response.username})
-                response.refresh_token = refresh_security.create_refresh_token(subject={"username": response.username})
-                return response
+                response_schema = self.controller.to_schema(**model.__dict__)
+                response_schema.access_token = access_security.create_access_token(subject={"username": response_schema.username})
+                refresh_token = refresh_security.create_refresh_token(subject={"username": response_schema.username})
+                refresh_security.set_refresh_cookie(response=response, refresh_token=refresh_token)
+                return response_schema
 
-    async def refresh(self, credentials: JwtAuthorizationCredentials, session: AsyncSession):
+    async def refresh(self, response: Response, credentials: JwtAuthorizationCredentials, session: AsyncSession):
         username = credentials["username"]
-        if response := await self.get(username=username, session=session, raw=False):
-            response.access_token = access_security.create_access_token(subject=credentials.subject)
-            response.refresh_token = refresh_security.create_refresh_token(subject=credentials.subject)
-            return response
+        if response_schema := await self.get(username=username, session=session, raw=False):
+            response_schema.access_token = access_security.create_access_token(subject=credentials.subject)
+            refresh_token = refresh_security.create_refresh_token(subject=credentials.subject)
+            refresh_security.set_refresh_cookie(response=response, refresh_token=refresh_token)
+            return response_schema
 
     async def current(self, credentials: JwtAuthorizationCredentials, session: AsyncSession):
         username = credentials["username"]
