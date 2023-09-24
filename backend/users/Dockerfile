@@ -15,4 +15,4 @@ ENV PATH=/app/.venv/bin:$PATH \
 WORKDIR /app
 COPY src src
 COPY --from=builder /app/.venv .venv
-ENTRYPOINT ["sh", "-c", "uvicorn src.main:app --host 0.0.0.0 --port 8000"]
+ENTRYPOINT ["sh", "-c", "alembic upgrade head && uvicorn src.main:create_app --host 0.0.0.0 --port 8000"]
