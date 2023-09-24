@@ -46,20 +46,20 @@ async def login(
     )
 
 
-# @router.post(
-#     path="/refresh",
-#     response_model=UserResponseSchema,
-#     status_code=status.HTTP_200_OK,
-#     summary="Refresh token",
-# )
-# async def refresh(
-#     credentials: JwtAuthorizationCredentials = Security(refresh_security),
-#     postgres_session: AsyncSession = Depends(create_postgres_session),
-# ):
-#     return await user_service.refresh(
-#         schema=credentials,
-#         session=postgres_session,
-#     )
+@router.post(
+    path="/refresh",
+    response_model=UserResponseSchema,
+    status_code=status.HTTP_200_OK,
+    summary="Refresh token",
+)
+async def refresh(
+    credentials: JwtAuthorizationCredentials = Security(refresh_security),
+    postgres_session: AsyncSession = Depends(create_postgres_session),
+):
+    return await user_service.refresh(
+        credentials=credentials,
+        session=postgres_session,
+    )
 
 
 @router.get(
@@ -72,4 +72,4 @@ async def current(
     credentials: JwtAuthorizationCredentials = Security(access_security),
     postgres_session: AsyncSession = Depends(create_postgres_session),
 ):
-    return await user_service.get(username=credentials["username"], session=postgres_session)
+    return await user_service.current(credentials=credentials, session=postgres_session)

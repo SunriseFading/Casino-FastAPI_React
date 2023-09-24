@@ -3,6 +3,7 @@ from src.schemas.users import UserLoginSchema, UserRegisterSchema
 from src.controllers.users import user_controller
 from src.core.password import hash_password, verify_password
 from src.core.auth import access_security, refresh_security
+from fastapi_jwt import JwtAuthorizationCredentials
 
 
 class UserService:
@@ -32,6 +33,18 @@ class UserService:
                 response.access_token = access_security.create_access_token(subject={"username": response.username})
                 response.refresh_token = refresh_security.create_refresh_token(subject={"username": response.username})
                 return response
+
+    async def refresh(self, credentials: JwtAuthorizationCredentials, session: AsyncSession):
+        username = credentials["username"]
+        if response := await self.get(username=username, session=session, raw=False):
+            response.access_token = access_security.create_access_token(subject=credentials.subject)
+            response.refresh_token = refresh_security.create_refresh_token(subject=credentials.subject)
+            return response
+
+    async def current(self, credentials: JwtAuthorizationCredentials, session: AsyncSession):
+        username = credentials["username"]
+        if response := await self.get(username=username, session=session, raw=False):
+            return response
 
 
 user_service = UserService(controller=user_controller)
