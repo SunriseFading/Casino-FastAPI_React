@@ -17,25 +17,25 @@ $api.interceptors.response.use(
     )}`;
     return config;
   },
-  async (err) => {
-    const originalRequest = err.config;
-    if (err.response.status === 401 && !originalRequest._isRetry) {
+  async (error) => {
+    const originalRequest = error.config;
+    if (error.response.status === 401 && !originalRequest._isRetry) {
       originalRequest._isRetry = true;
       try {
-        const response = await axios.get<AuthResponse>(`${API_URL}/users/refresh`, {
-          withCredentials: true,
-        });
-        localStorage.setItem(
-          USER_LOCALSTORAGE_KEY,
-          response.data.access_token
+        const response = await axios.get<AuthResponse>(
+          `${API_URL}/users/refresh`,
+          {
+            withCredentials: true,
+          }
         );
+        localStorage.setItem(USER_LOCALSTORAGE_KEY, response.data.access_token);
         return await $api.request(originalRequest);
       } catch (e) {
         alert('Авторизуйтесь снова');
         localStorage.removeItem(USER_LOCALSTORAGE_KEY);
       }
     }
-    throw err;
+    throw error;
   }
 );
 

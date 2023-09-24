@@ -14,17 +14,12 @@ function App() {
 
   useEffect(() => {
     if (localStorage.getItem(USER_LOCALSTORAGE_KEY)) {
-      checkAuth();
+      dispatch(checkAuth());
     }
   }, [dispatch]);
 
-  const go = () => {
-    dispatch(checkAuth());
-  };
-
   return (
     <div className={classNames('app', {}, [theme])}>
-      <button onClick={go}>go</button>
       <Suspense fallback="">
         <Navbar />
         <div className="content-page">
