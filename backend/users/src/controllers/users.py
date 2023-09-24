@@ -1,7 +1,7 @@
-from src.repositories.users import UserRepository, user_repository
-from src.database.models.users import User as UserModel
-from src.schemas.users import UserResponseSchema, UserRegisterSchema, UserLoginSchema
 from sqlalchemy.ext.asyncio import AsyncSession
+from src.database.models.users import User as UserModel
+from src.repositories.users import UserRepository, user_repository
+from src.schemas.users import UserRegisterSchema, UserResponseSchema
 
 
 class UserController:
@@ -33,8 +33,4 @@ class UserController:
         return None
 
 
-user_controller = UserController(
-    schema=UserResponseSchema,
-    model=UserModel,
-    repository=user_repository
-)
+user_controller = UserController(schema=UserResponseSchema, model=UserModel, repository=user_repository)

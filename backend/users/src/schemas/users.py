@@ -1,4 +1,5 @@
 from typing import Literal
+
 from src.schemas.base import BaseSchema
 
 

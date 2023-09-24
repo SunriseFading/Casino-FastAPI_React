@@ -21,7 +21,7 @@ class JWTSettings(Settings):
     header_name: str
     algorithm: str
     access_token_expires: int
-    refresh_token_expires: int
+    refresh_token_expires: int | None = None
 
     class Config:
         env_prefix = "jwt_"

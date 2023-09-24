@@ -1,11 +1,10 @@
-from fastapi import APIRouter, Depends, status, Security, HTTPException, Response
+from fastapi import APIRouter, Depends, Response, Security, status
+from fastapi_jwt import JwtAuthorizationCredentials
 from sqlalchemy.ext.asyncio import AsyncSession
+from src.core.auth import access_security, refresh_security
 from src.database.session import create_postgres_session
 from src.schemas.users import UserLoginSchema, UserRegisterSchema, UserResponseSchema
 from src.services.users import user_service
-from src.core.auth import access_security, refresh_security
-from fastapi_jwt import JwtAuthorizationCredentials
-
 
 router = APIRouter(
     prefix="/users",

@@ -1,11 +1,10 @@
 from typing import Any
 
-from fastapi import Depends, FastAPI, status, Request
+from fastapi import Depends, FastAPI, status
 from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.database.session import create_postgres_session
 from src.routers import users
-
 from src.settings import app_settings
 
 

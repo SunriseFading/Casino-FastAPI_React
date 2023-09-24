@@ -1,6 +1,5 @@
 from sqlalchemy.orm import declarative_base
 
-
 Base = declarative_base()
 Base.metadata.naming_convention = {
     "ix": "ix_%(column_0_label)s",
