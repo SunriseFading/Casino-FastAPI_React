@@ -9,7 +9,7 @@ export const checkAuth = createAsyncThunk<User>(
   'auth/checkAuth',
   async (_, thunkAPI) => {
     try {
-      const response = await axios.get<AuthResponse>(`${API_URL}/refresh`, {
+      const response = await axios.get<AuthResponse>(`${API_URL}/users/refresh`, {
         withCredentials: true,
       });
 
