@@ -18,8 +18,13 @@ function App() {
     }
   }, [dispatch]);
 
+  const go = () => {
+    dispatch(checkAuth());
+  };
+
   return (
     <div className={classNames('app', {}, [theme])}>
+      <button onClick={go}>go</button>
       <Suspense fallback="">
         <Navbar />
         <div className="content-page">
