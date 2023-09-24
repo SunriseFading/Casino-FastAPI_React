@@ -16,13 +16,13 @@ export const registerUser = createAsyncThunk<
   { rejectValue: string }
 >('auth/registerUser', async (authData, thunkAPI) => {
   try {
-    const response = await $api.post<AuthResponse>('/register', authData);
+    const response = await $api.post<AuthResponse>('/users/register', authData);
     if (!response.data) {
       throw new Error();
     }
     localStorage.setItem(
       USER_LOCALSTORAGE_KEY,
-      JSON.stringify(response.data.accessToken)
+      JSON.stringify(response.data.access_token)
     );
     thunkAPI.dispatch(userActions.setAuthData(response.data));
     return response.data;

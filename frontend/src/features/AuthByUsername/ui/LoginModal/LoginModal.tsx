@@ -7,18 +7,15 @@ interface LoginModalProps {
   className?: string;
   isOpen: boolean;
   onClose: () => void;
-  isAuthForm: boolean;
-  isRegisterForm: boolean;
+  typeForm: FormTypes;
 }
 
 export const LoginModal = ({
   className,
   isOpen,
   onClose,
-  isRegisterForm,
-  isAuthForm,
+  typeForm,
 }: LoginModalProps) => {
-  const typeForm = isAuthForm ? FormTypes.AUTH : FormTypes.REGISTER;
   return (
     <Modal
       className={classNames(cls.LoginModal, {}, [className])}
@@ -26,7 +23,7 @@ export const LoginModal = ({
       onClose={onClose}
       lazy
     >
-      <LoginForm typeForm={typeForm} />
+      <LoginForm isVisible={isOpen} typeForm={typeForm} />
     </Modal>
   );
 };

@@ -1,7 +1,7 @@
 export interface User {
   id: string;
   username: string;
-  accessToken: string
+  access_token: string
 }
 
 export interface UserSchema {
