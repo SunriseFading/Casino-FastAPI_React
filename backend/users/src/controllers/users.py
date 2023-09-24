@@ -5,7 +5,7 @@ from src.schemas.users import UserRegisterSchema, UserResponseSchema
 
 
 class UserController:
-    def __init__(self, schema: UserResponseSchema, model: UserModel, repository: UserRepository):
+    def __init__(self, schema: UserResponseSchema, model: UserModel, repository: UserRepository) -> None:
         self.schema = schema
         self.model = model
         self.repository = repository
@@ -22,12 +22,14 @@ class UserController:
             password=kwargs["password"],
         )
 
-    async def create(self, schema: UserRegisterSchema, session: AsyncSession, raw: bool = False):
+    async def create(
+        self, schema: UserRegisterSchema, session: AsyncSession, raw: bool = False
+    ) -> UserResponseSchema | UserModel:
         model = self.to_model(**schema.model_dump())
         model = await self.repository.create(instance=model, session=session)
         return model if raw else self.to_schema(**model.__dict__)
 
-    async def get(self, session: AsyncSession, raw: bool = False, **kwargs):
+    async def get(self, session: AsyncSession, raw: bool = False, **kwargs) -> UserResponseSchema | UserModel | None:
         if model := await self.repository.get(**kwargs, session=session):
             return model if raw else self.to_schema(**model.__dict__)
         return None

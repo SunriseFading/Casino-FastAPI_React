@@ -1,5 +1,3 @@
-from typing import Literal
-
 from src.schemas.base import BaseSchema
 
 
@@ -17,8 +15,3 @@ class UserResponseSchema(BaseSchema):
     id: int
     username: str
     access_token: str | None = None
-    # refresh_token: str | None = None
-
-
-class UserErrorSchema(BaseSchema):
-    detail: Literal["Username is not exist", "Password is not correct"]
