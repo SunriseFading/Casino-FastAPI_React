@@ -7,6 +7,6 @@ export interface AuthSchema {
 
 export interface AuthResponse {
   id: string;
-  accessToken: string;
+  access_token: string;
   username: string;
 }

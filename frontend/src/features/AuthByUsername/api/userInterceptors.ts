@@ -27,11 +27,12 @@ $api.interceptors.response.use(
         });
         localStorage.setItem(
           USER_LOCALSTORAGE_KEY,
-          response.data.accessToken
+          response.data.access_token
         );
         return await $api.request(originalRequest);
       } catch (e) {
-        alert('Не авторизован');
+        alert('Авторизуйтесь снова');
+        localStorage.removeItem(USER_LOCALSTORAGE_KEY);
       }
     }
     throw err;

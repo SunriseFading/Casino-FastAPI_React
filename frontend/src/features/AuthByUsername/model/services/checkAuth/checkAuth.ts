@@ -15,7 +15,7 @@ export const checkAuth = createAsyncThunk<User>(
 
       localStorage.setItem(
         USER_LOCALSTORAGE_KEY,
-        JSON.stringify(response.data.accessToken)
+        JSON.stringify(response.data.access_token)
       );
       thunkAPI.dispatch(userActions.setAuthData(response.data));
       return response.data;

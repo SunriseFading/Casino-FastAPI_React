@@ -4,7 +4,7 @@ import { Button, ButtonTheme } from 'shared/ui/Button/Button';
 import { Input } from 'shared/ui/Input/Input';
 import cls from './LoginForm.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
-import { memo, useCallback } from 'react';
+import { memo, useCallback, useEffect } from 'react';
 import { authActions } from '../../model/slice/authSlice';
 import { getAuthState } from '../../model/selectors/getLoginState/getLoginState';
 import { Text, TextTheme } from 'shared/ui/Text/Text';
@@ -18,9 +18,10 @@ export enum FormTypes {
 interface LoginFormProps {
   className?: string;
   typeForm: FormTypes;
+  isVisible: boolean;
 }
 
-export const LoginForm = memo(({ className, typeForm }: LoginFormProps) => {
+export const LoginForm = memo(({ className, typeForm, isVisible }: LoginFormProps) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
@@ -51,6 +52,13 @@ export const LoginForm = memo(({ className, typeForm }: LoginFormProps) => {
         break;
     }
   }, [dispatch, username, password, typeForm]);
+
+  useEffect(() => {
+    return () => {
+      dispatch(authActions.setUsername(''));
+      dispatch(authActions.setPassword(''));
+    };
+  }, [dispatch, isVisible]);
 
   return (
     <div className={classNames(cls.LoginForm, {}, [className])}>

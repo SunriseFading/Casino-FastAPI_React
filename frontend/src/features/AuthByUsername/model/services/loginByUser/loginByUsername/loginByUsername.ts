@@ -15,13 +15,13 @@ export const loginByUsername = createAsyncThunk<
   { rejectValue: string }
 >('auth/loginByUsername', async (authData, thunkAPI) => {
   try {
-    const response = await $api.post<AuthResponse>('/login', authData);
+    const response = await $api.post<AuthResponse>('/users/login', authData);
     if (!response.data) {
       throw new Error();
     }
     localStorage.setItem(
       USER_LOCALSTORAGE_KEY,
-      JSON.stringify(response.data.accessToken)
+      JSON.stringify(response.data.access_token)
     );
     thunkAPI.dispatch(userActions.setAuthData(response.data));
     return response.data;
