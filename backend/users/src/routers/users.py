@@ -22,8 +22,8 @@ router = APIRouter(
 async def register(
     response: Response,
     schema: UserRegisterSchema,
-    postgres_session: AsyncSession = Depends(create_postgres_session),
-):
+    postgres_session: AsyncSession = Depends(create_postgres_session),  # noqa: B008
+) -> UserResponseSchema:
     return await user_service.register(
         response=response,
         schema=schema,
@@ -40,8 +40,8 @@ async def register(
 async def login(
     response: Response,
     schema: UserLoginSchema,
-    postgres_session: AsyncSession = Depends(create_postgres_session),
-):
+    postgres_session: AsyncSession = Depends(create_postgres_session),  # noqa: B008
+) -> UserResponseSchema:
     return await user_service.login(
         response=response,
         schema=schema,
@@ -57,9 +57,9 @@ async def login(
 )
 async def refresh(
     response: Response,
-    credentials: JwtAuthorizationCredentials = Security(refresh_security),
-    postgres_session: AsyncSession = Depends(create_postgres_session),
-):
+    credentials: JwtAuthorizationCredentials = Security(refresh_security),  # noqa: B008
+    postgres_session: AsyncSession = Depends(create_postgres_session),  # noqa: B008
+) -> UserResponseSchema | None:
     return await user_service.refresh(
         response=response,
         credentials=credentials,
@@ -74,7 +74,7 @@ async def refresh(
     summary="Get current user from access token",
 )
 async def current(
-    credentials: JwtAuthorizationCredentials = Security(access_security),
-    postgres_session: AsyncSession = Depends(create_postgres_session),
-):
+    credentials: JwtAuthorizationCredentials = Security(access_security),  # noqa: B008
+    postgres_session: AsyncSession = Depends(create_postgres_session),  # noqa: B008
+) -> UserResponseSchema | None:
     return await user_service.current(credentials=credentials, session=postgres_session)

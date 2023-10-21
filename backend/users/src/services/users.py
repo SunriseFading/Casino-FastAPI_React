@@ -1,3 +1,5 @@
+from typing import Any
+
 from fastapi import Response
 from fastapi_jwt import JwtAuthorizationCredentials
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -18,7 +20,9 @@ class UserService:
     ) -> UserResponseSchema | UserModel:
         return await self.controller.create(schema=schema, session=session, raw=raw)
 
-    async def get(self, session: AsyncSession, raw: bool = False, **kwargs) -> UserResponseSchema | UserModel | None:
+    async def get(
+        self, session: AsyncSession, raw: bool = False, **kwargs: dict[str, Any]
+    ) -> UserResponseSchema | UserModel | None:
         if user := await self.controller.get(**kwargs, session=session, raw=raw):
             return user
         return None
@@ -71,8 +75,8 @@ class UserService:
     async def current(
         self, credentials: JwtAuthorizationCredentials, session: AsyncSession
     ) -> UserResponseSchema | None:
-        if response := await self.controller.get(username=credentials["username"], session=session, raw=False):
-            return response
+        if response_schema := await self.controller.get(username=credentials["username"], session=session, raw=False):
+            return response_schema
         return None
 
 

@@ -22,7 +22,7 @@ def create_app() -> FastAPI:
 
     @app.get("/healthcheck")
     async def healthcheck(
-        session: AsyncSession = Depends(create_postgres_session),
+        session: AsyncSession = Depends(create_postgres_session),  # noqa: B008
     ) -> JSONResponse:
         return JSONResponse({"status": "ok"}, status_code=status.HTTP_200_OK)
 

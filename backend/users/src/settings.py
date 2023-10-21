@@ -37,7 +37,7 @@ class PostgresSettings(Settings):
     echo: bool = False
 
     @property
-    def url(self):
+    def url(self) -> str:
         return f"postgresql+asyncpg://{self.user}:{self.password}@{self.host}:{self.port}/{self.db}"
 
     class Config:

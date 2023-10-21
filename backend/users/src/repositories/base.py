@@ -1,14 +1,15 @@
 from collections.abc import Iterable
-from typing import Type, TypeVar
+from typing import Any, Type, TypeVar
 
 from sqlalchemy import and_, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.sql import Select
 
 TypeModel = TypeVar("TypeModel")
 
 
 class BaseRepository:
-    def __init__(self, model: Type[TypeModel]):
+    def __init__(self, model: Type[TypeModel]) -> None:
         self.model = model
 
     async def create(self, instance: TypeModel, session: AsyncSession) -> TypeModel:
@@ -23,35 +24,32 @@ class BaseRepository:
         await session.commit()
         return instances
 
-    def set_filters(self, query, kwargs: dict[str, str]):
+    def set_filters(self, query: Select, kwargs: dict[str, str]) -> Select:  # noqa: CCR001, CAC001
         filters = []
         for field, value in kwargs.items():
             if value:
-                try:
-                    if field.endswith("__gt"):
-                        model_field = getattr(self.model, field[:-4])
-                        filters.append(model_field > value)
-                    elif field.endswith("__gte"):
-                        model_field = getattr(self.model, field[:-5])
-                        filters.append(model_field >= value)
-                    elif field.endswith("__lt"):
-                        model_field = getattr(self.model, field[:-4])
-                        filters.append(model_field < value)
-                    elif field.endswith("__lte"):
-                        model_field = getattr(self.model, field[:-5])
-                        filters.append(model_field <= value)
-                    elif field.endswith("__in"):
-                        model_field = getattr(self.model, field[:-4])
-                        filters.append(model_field.in_(value))
-                    else:
-                        model_field = getattr(self.model, field)
-                        filters.append(model_field == value)
-                except AttributeError:
-                    return None
+                if field.endswith("__gt"):
+                    model_field = getattr(self.model, field[:-4])
+                    filters.append(model_field > value)
+                elif field.endswith("__gte"):
+                    model_field = getattr(self.model, field[:-5])
+                    filters.append(model_field >= value)
+                elif field.endswith("__lt"):
+                    model_field = getattr(self.model, field[:-4])
+                    filters.append(model_field < value)
+                elif field.endswith("__lte"):
+                    model_field = getattr(self.model, field[:-5])
+                    filters.append(model_field <= value)
+                elif field.endswith("__in"):
+                    model_field = getattr(self.model, field[:-4])
+                    filters.append(model_field.in_(value))
+                else:
+                    model_field = getattr(self.model, field)
+                    filters.append(model_field == value)
         query = query.filter(and_(*filters))
         return query
 
-    def set_order_by(self, query, order_by: str):
+    def set_order_by(self, query: Select, order_by: str) -> Select:
         if order_by[0] == "-":
             order_by_field = getattr(self.model, order_by[1:]).desc()
         else:
@@ -59,7 +57,7 @@ class BaseRepository:
         query = query.order_by(order_by_field)
         return query
 
-    async def get(self, session: AsyncSession, **kwargs) -> TypeModel | None:
+    async def get(self, session: AsyncSession, **kwargs: dict[str, Any]) -> TypeModel | None:
         query = select(self.model)
         if kwargs:
             query = self.set_filters(query=query, kwargs=kwargs)
@@ -79,7 +77,9 @@ class BaseRepository:
             return result.scalars().all()
         return None
 
-    async def filter(self, session: AsyncSession, order_by: str | None = None, **kwargs) -> Iterable[TypeModel] | None:
+    async def filter(
+        self, session: AsyncSession, order_by: str | None = None, **kwargs: dict[str, Any]
+    ) -> Iterable[TypeModel] | None:
         query = select(self.model)
         if kwargs:
             query = self.set_filters(query=query, kwargs=kwargs)
@@ -100,7 +100,7 @@ class BaseRepository:
         await session.commit()
         return instances
 
-    async def delete(self, instance, session: AsyncSession) -> None:
+    async def delete(self, instance: TypeModel, session: AsyncSession) -> None:
         await session.delete(instance)
         await session.commit()
 
